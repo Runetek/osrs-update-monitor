@@ -1,0 +1,17 @@
+run.config:
+  engine: python
+  # engine.config:
+  #   runtime: python-3.5
+  # extra_steps:
+  #   - pip install -r requirements.txt
+
+data.redis:
+  image: nanobox/redis:3.0
+
+web.main:
+  start:
+    flask: 'python osrs_updates/http.py'
+  cron:
+    - id: check_for_updates
+      schedule: '*/5 * * * *'
+      command: 'python osrs_updates/proto.py'
