@@ -1,9 +1,7 @@
 run.config:
   engine: python
-  # engine.config:
-  #   runtime: python-3.5
-  # extra_steps:
-  #   - pip install -r requirements.txt
+  extra_steps:
+    - pip install -r requirements.txt
   extra_packages:
     - nginx
 
