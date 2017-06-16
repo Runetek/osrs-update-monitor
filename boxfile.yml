@@ -4,13 +4,16 @@ run.config:
   #   runtime: python-3.5
   # extra_steps:
   #   - pip install -r requirements.txt
+  extra_packages:
+    - nginx
 
 data.redis:
   image: nanobox/redis:3.0
 
 web.main:
   start:
-    flask: 'python osrs_updates/http.py'
+    nginx: nginx -c /app/etc/nginx.conf
+    flask: gunicorn -c /app/etc/gunicorn.py osrs_updates.http:app
   cron:
     - id: check_for_updates
       schedule: '*/5 * * * *'
