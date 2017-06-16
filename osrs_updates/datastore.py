@@ -8,7 +8,7 @@ def _redis_host():
 def redis_connect():
     return StrictRedis(host=_redis_host(), port=6379, db=0)
 
-class DB(object):
+class RedisDict(object):
     def __init__(self):
         self.redis = redis_connect()
 

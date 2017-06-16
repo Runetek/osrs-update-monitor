@@ -1,7 +1,7 @@
 from contextlib import closing
 from socket import create_connection
 from struct import pack, unpack
-from datastore import DB
+from datastore import RedisDict
 
 HOST = 'oldschool1.runescape.com'
 PORT = 43594
@@ -42,7 +42,7 @@ class UpdateChecker(object):
                 print 'not {}'.format(rev)
 
 def main():
-    db = DB()
+    db = RedisDict()
     checker = UpdateChecker(host='oldschool78.runescape.com')
     initial_revision = db['revision'] or 140
     if type(initial_revision) is str:

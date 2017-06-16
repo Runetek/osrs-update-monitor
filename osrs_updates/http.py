@@ -1,7 +1,7 @@
 from flask import Flask, g, jsonify
 from cache import redis_connect
 from werkzeug.local import LocalProxy
-from datastore import DB
+from datastore import RedisDict
 
 app = Flask(__name__)
 
@@ -9,7 +9,7 @@ app = Flask(__name__)
 def get_redis():
     db = getattr(g, '_db', None)
     if db is None:
-        db = g._db = DB()
+        db = g._db = RedisDict()
     return db
 
 
