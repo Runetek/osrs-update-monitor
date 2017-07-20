@@ -2,6 +2,7 @@ from contextlib import closing
 from socket import create_connection
 from struct import pack, unpack
 from datastore import PersistentDict
+from notifications import Notification, send_notification
 
 HOST = 'oldschool1.runescape.com'
 PORT = 43594
@@ -50,6 +51,9 @@ def main():
     current = checker.run(start=initial_revision)
     if current is not None:
         db['revision'] = current
+        if current != initial_revision:
+            n = Notification(title='OSRS Updated!', body='New revision={}, Old revision={}'.format(current, initial_revision))
+            send_notification(n)
 
 
 if __name__ == '__main__':
