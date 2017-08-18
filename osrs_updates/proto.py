@@ -9,12 +9,6 @@ PORT = 43594
 
 RESP_OUTDATED = 6
 
-def encode_handshake(revision):
-    return pack('>bi', 15, revision)
-
-def decode_handshake(sock):
-    return unpack('b', sock.recv(1))[0]
-
 class UpdateChecker(object):
     def __init__(self, host=None, port=43594):
         self.host = host or HOST
@@ -26,12 +20,15 @@ class UpdateChecker(object):
     def _decode_reply(self, reply):
         return unpack('b', reply)[0]
 
+    def _encode_request(self, revision):
+        return pack('>bi', 15, revision)
+
     def _check_rev(self, revision):
         # Handshake code by pyroryan (pyro.ryan1988@gmail.com)
         # Original post: https://rs-hacking.com/forum/index.php?/topic/177-2/?p=1399
 
         with closing(create_connection((self.host, self.port))) as sock:
-            sock.send(encode_handshake(revision))
+            sock.send(self._encode_request(revision))
             reply = self._decode_reply(sock.recv(1))
             return not self._is_outdated(reply)
 
