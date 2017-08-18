@@ -1,6 +1,7 @@
-from flask import Flask, g, jsonify
+from flask import Flask, g, jsonify, send_from_directory
 from werkzeug.local import LocalProxy
 from datastore import PersistentDict
+from os.path import join
 
 app = Flask(__name__)
 
@@ -13,6 +14,11 @@ def get_redis():
 
 
 db = LocalProxy(get_redis)
+
+@app.route('/packs/<pack>.jar')
+def gamepack(pack):
+    if pack is not None:
+        return send_from_directory('/app/static', '{}.jar'.format(pack), as_attachment=True)
 
 @app.route('/')
 def index():

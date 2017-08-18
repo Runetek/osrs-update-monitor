@@ -2,17 +2,39 @@ run.config:
   engine: python
   extra_steps:
     - pip install -r requirements.txt
+    - python osrs_updates/worlds/export.py
+    - npm i -g json-server
+    # - sudo chmod +wr /app/static
   extra_packages:
+    - nodejs
     - nginx
 
-data.redis:
-  image: nanobox/redis:3.0
+data.storage:
+  image: nanobox/unfs:0.9
+
+web.worlds:
+  routes:
+    - '/worlds'
+  start:
+    api: json-server -p 8080 -H 0.0.0.0 --ro -w /app/static/worlds.json
+  cron:
+    - id: update_worlds
+      schedule: '*/30 * * * *'
+      command: 'python osrs_updates/worlds/export.py'
+  network_dirs:
+    data.storage:
+      - static
 
 web.main:
+  routes:
+    - '/'
   start:
     nginx: nginx -c /app/etc/nginx.conf
-    flask: gunicorn -c /app/etc/gunicorn.py osrs_updates.http:app
+    revs: json-server -p 8000 -H 0.0.0.0 --ro -w /app/static/revision.json
   cron:
     - id: check_for_updates
       schedule: '*/5 * * * *'
       command: 'python osrs_updates/proto.py'
+  network_dirs:
+    data.storage:
+      - static
