@@ -7,7 +7,7 @@ Flask==0.12.2
 greenlet==0.4.12
 idna==2.5
 itsdangerous==0.24
-Jinja2==2.9.6
+Jinja2==2.11.3
 kaitaistruct==0.7
 MarkupSafe==1.0
 packaging==16.8
